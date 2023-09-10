@@ -17,7 +17,6 @@ public class SOSfeatures {
 	private JFrame frame;
 	private JTextField textField;
 	private JTextField textField_1;
-   //https://www.youtube.com/watch?v=n8RWUoBcn3E
 	/**
 	 * Launch the application.
 	 */
