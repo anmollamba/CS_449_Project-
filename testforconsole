@@ -1,0 +1,53 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class SosGameTest {
+    private SosGame game;
+
+    
+    public void setUp() {
+        game = new SosGame();
+    }
+
+    @Test
+    public void testInitializeBoard() {
+        char[][] expectedBoard = {
+            {' ', ' ', ' '},
+            {' ', ' ', ' '},
+            {' ', ' ', ' '}
+        };
+        assertArrayEquals(expectedBoard, game.board);
+    }
+
+    @Test
+    public void testSwitchPlayer() {
+        assertEquals('S', game.currentPlayer);
+        game.switchPlayer();
+        assertEquals('O', game.currentPlayer);
+        game.switchPlayer();
+        assertEquals('S', game.currentPlayer);
+    }
+
+    @Test
+    public void testIsBoardFull() {
+        assertFalse(game.isBoardFull());
+        game.board = new char[][] {
+            {'S', 'O', 'S'},
+            {'O', 'S', 'O'},
+            {'O', 'S', 'O'}
+        };
+        assertTrue(game.isBoardFull());
+    }
+
+    @Test
+    public void testIsWinner() {
+        assertFalse(game.isWinner());
+        game.board = new char[][] {
+            {'S', 'O', 'S'},
+            {'O', 'S', 'O'},
+            {'S', 'S', 'O'}
+        };
+        assertTrue(game.isWinner());
+    }
+}
