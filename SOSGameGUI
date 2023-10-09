@@ -1,0 +1,131 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class SOSGameGUI {
+    private JFrame frame;
+    private JPanel optionsPanel;
+    private JPanel gamePanel;
+    private JButton[][] gridButtons;
+    private int gridSize;
+    private char currentPlayer;
+
+    public SOSGameGUI() {
+        frame = new JFrame("SOS Game");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        optionsPanel = new JPanel();
+        gamePanel = new JPanel();
+
+        // Create buttons for selecting board size and game mode
+        JButton size3Button = new JButton("3x3");
+        JButton size4Button = new JButton("4x4");
+        JButton size8Button = new JButton("8x8");
+        JButton startButton = new JButton("Start");
+        JButton simpleModeButton = new JButton("Simple Mode");
+        JButton generalModeButton = new JButton("General Mode");
+
+        size3Button.addActionListener(new SizeButtonListener(3));
+        size4Button.addActionListener(new SizeButtonListener(4));
+        size8Button.addActionListener(new SizeButtonListener(8));
+        startButton.addActionListener(new StartButtonListener());
+        simpleModeButton.addActionListener(new ModeButtonListener("Simple"));
+        generalModeButton.addActionListener(new ModeButtonListener("General"));
+
+        optionsPanel.add(size3Button);
+        optionsPanel.add(size4Button);
+        optionsPanel.add(size8Button);
+        optionsPanel.add(startButton);
+        optionsPanel.add(simpleModeButton);
+        optionsPanel.add(generalModeButton);
+
+        frame.add(optionsPanel, BorderLayout.NORTH);
+        frame.add(gamePanel, BorderLayout.CENTER);
+
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    private class SizeButtonListener implements ActionListener {
+        private int size;
+
+        public SizeButtonListener(int size) {
+            this.size = size;
+        }
+        public void actionPerformed(ActionEvent e) {
+            gridSize = size;
+            initializeGame();
+        }
+
+    }
+    
+    private class StartButtonListener implements ActionListener {
+        private int size;
+     
+        public void actionPerformed(ActionEvent e) {
+            gridSize = size; 
+            initializeGame();
+        }
+    }
+
+    private class ModeButtonListener implements ActionListener {
+        private String mode;
+
+        public ModeButtonListener(String mode) {
+            this.mode = mode;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Implement mode selection logic here when needed
+        }
+    }
+
+    private void initializeGame() {
+        gamePanel.removeAll();
+        gamePanel.setLayout(new GridLayout(gridSize, gridSize));
+        gridButtons = new JButton[gridSize][gridSize];
+        currentPlayer = 'S';
+
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                gridButtons[i][j] = new JButton();
+                gridButtons[i][j].setFont(new Font("Arial", Font.PLAIN, 24));
+                gridButtons[i][j].addActionListener(new GridButtonListener(i, j));
+                gamePanel.add(gridButtons[i][j]);
+            }
+        }
+
+        frame.pack();
+    }
+
+    private class GridButtonListener implements ActionListener {
+        private int row;
+        private int col;
+
+        public GridButtonListener(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (gridButtons[row][col].getText().isEmpty()) {
+                gridButtons[row][col].setText(String.valueOf(currentPlayer));
+                switchPlayer();
+            }
+        }
+    }
+
+    private void switchPlayer() {
+        currentPlayer = (currentPlayer == 'S') ? 'O' : 'S';
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new SOSGameGUI();
+        });
+    }
+}
