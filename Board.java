@@ -1,6 +1,15 @@
 package application;
 
 import java.io.FileWriter;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.Random;
 
@@ -111,6 +120,32 @@ public class Board {
 			System.out.println("Col: " + col);
 		}
 		//turn = 'O';
+	}
+	
+	
+	// Test the auto move by having the computer only being able to make O moves first
+	public int[] makeAutoOMove() {
+		Random random = new Random();
+		int[] rndmCoords = new int[2];
+		rndmCoords[0] = random.nextInt(getRows());
+		rndmCoords[1] = random.nextInt(getCols());
+		if (grid[rndmCoords[0]][rndmCoords[1]] == Cell.O || grid[rndmCoords[0]][rndmCoords[1]] == Cell.S) {
+			makeAutoOMove();
+		}
+		makeOMove(rndmCoords[0], rndmCoords[1]);
+		return rndmCoords;
+	}
+	
+	public int[] makeAutoSMove() {
+		Random random = new Random();
+		int[] rndmCoords = new int[2];
+		rndmCoords[0] = random.nextInt(getRows());
+		rndmCoords[1] = random.nextInt(getCols());
+		if (grid[rndmCoords[0]][rndmCoords[1]] == Cell.O || grid[rndmCoords[0]][rndmCoords[1]] == Cell.S) {
+			makeAutoSMove();
+		}
+		makeSMove(rndmCoords[0], rndmCoords[1]);
+		return rndmCoords;
 	}
 	
 	public boolean isValidMove(int row, int col) {
