@@ -1,4 +1,3 @@
-
 package application;
 
 import java.awt.*;
@@ -33,8 +32,12 @@ public class GUI extends JFrame {
 	private JRadioButton r2;
 	private JRadioButton s1Btn;
 	private JRadioButton o1Btn;
+	private JRadioButton humOne;
+	private JRadioButton comOne;
 	private JRadioButton s2Btn;
 	private JRadioButton o2Btn;
+	private JRadioButton humTwo;
+	private JRadioButton comTwo;
 	private JTextField sizeSelect;
 	private JLabel pl1Score;
 	private JLabel pl2Score;
@@ -80,16 +83,6 @@ public class GUI extends JFrame {
 		
 		repaint();
 	}
-//Check for the valid board entry	
-	public boolean setBoardSize(int size) {
-		if (size < 3 || size > 8 )
-		{
-			gameStatusBar = new JLabel("Choose a board size between 3 and 8.");
-			gameStatusBar.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 20));
-			gameStatusBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 4, 5));
-		}
-		return true;
-	}
 	
 	private void setContentPane() {
 		gameBoardCanvas = new GameBoardCanvas();
@@ -97,8 +90,8 @@ public class GUI extends JFrame {
 		CANVAS_HEIGHT = CELL_SIZE * board.getCols();
 		gameBoardCanvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 		
-		gameStatusBar = new JLabel("Select a Game Mode then select the board size to start a game. ");
-		gameStatusBar.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 20));
+		gameStatusBar = new JLabel("Select a Game Mode then, select the board size to start a game. ");
+		gameStatusBar.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 15));
 		gameStatusBar.setBorder(BorderFactory.createEmptyBorder(2, 5, 4, 5));
 		
 //		PANEL FOR ALL SELECTION
@@ -106,16 +99,16 @@ public class GUI extends JFrame {
 		panRight.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 //		CONTENT FOR PLAYERS
-		JPanel playerPanel = new JPanel(); //Panel to hold the controls for BLUE PLAYER and RED PLAYER
+		JPanel playerPanel = new JPanel(); //Panel to hold the controls for Red Player and Blue Player
 		playerPanel.setLayout(new BorderLayout());
 		
-//		BLUE PLAYER CONTROL PANEL			
+//		Red Player CONTROL PANEL			
 		JPanel pl1 = new JPanel();
 		pl1.setPreferredSize(new Dimension(200,100));
 		playerPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		
 		JPanel pl1Details = new JPanel();
-		JLabel pl1Text = new JLabel("BLUE PLAYER: ");
+		JLabel pl1Text = new JLabel("Red Player: ");
 		pl1Score = new JLabel ("Score: " + p1Points);
 		pl1Details.add(pl1Text);
 		pl1Details.add(pl1Score);
@@ -126,18 +119,25 @@ public class GUI extends JFrame {
 		o1Btn = new JRadioButton("O");
 		pl1Controls.add(s1Btn); //Adding the button to the button group
 		pl1Controls.add(o1Btn); //Adding the button to the button group
+		
+		ButtonGroup player1Type = new ButtonGroup();
+		humOne = new JRadioButton("Human");
+		comOne = new JRadioButton("Computer");
+		player1Type.add(humOne);
+		player1Type.add(comOne);
 
 		pl1.add(pl1Details);
 		pl1.add(s1Btn);
 		pl1.add(o1Btn);
+		pl1.add(humOne);
+		pl1.add(comOne);
 		
-		
-//		RED PLAYER CONTROL PANEL		
+//		Blue Player CONTROL PANEL		
 		JPanel pl2 = new JPanel();
 		pl2.setPreferredSize(new Dimension(200,150));
 		
 		JPanel pl2Details = new JPanel();
-		JLabel pl2Text = new JLabel("RED PLAYER: ");
+		JLabel pl2Text = new JLabel("Blue Player: ");
 		pl2Score = new JLabel("Score: " + p2Points);
 		pl2Details.add(pl2Text);
 		pl2Details.add(pl2Score);
@@ -149,12 +149,20 @@ public class GUI extends JFrame {
 		pl2Controls.add(s2Btn); //Adding the button to the button group
 		pl2Controls.add(o2Btn); //Adding the button to the button group
 		
+		ButtonGroup player2Type = new ButtonGroup();
+		humTwo = new JRadioButton("Human");
+		comTwo = new JRadioButton("Computer");
+		player2Type.add(humTwo);
+		player2Type.add(comTwo);
+		
 		pl2.add(pl2Details);
 		pl2.add(s2Btn);
 		pl2.add(o2Btn);
+		pl2.add(humTwo);
+		pl2.add(comTwo);
 		
 		
-//		ADDING THE BLUE PLAYER AND 2 CONTROL PANELS TO THE MAIN PLAYER CONTROL PANEL
+//		ADDING THE Red Player AND 2 CONTROL PANELS TO THE MAIN PLAYER CONTROL PANEL
 		playerPanel.add(pl1, BorderLayout.NORTH);
 		playerPanel.add(pl2, BorderLayout.SOUTH);
 		
@@ -206,7 +214,7 @@ public class GUI extends JFrame {
 				board.setBoardSize(newSize);
 				board.resetMoveCount();
 				sizeSelect.setEditable(false);
-				gameStatusBar.setText("BLUE PLAYER turn. ");
+				gameStatusBar.setText("Red Player turn. ");
 				updateBoardSize();
 				repaint();
 			}
@@ -237,46 +245,50 @@ public class GUI extends JFrame {
 						System.out.println("Clicked coordinates:");
 						System.out.println("Row: " + rowSelected);
 						System.out.println("Col: " + colSelected);
-		
+						/*
+						 * player turn is determined by the turnCounter.
+						 * if the moveCounter is even, Red Player goes,
+						 * if the moveCounter is odd, Blue Player goes.
+						 */
 						if (board.getMoveCount() % 2 == 0) {
-				
+							if (humOne.isSelected()) {
 								if (s1Btn.isSelected()) {
 									board.makeSMove(rowSelected, colSelected);
-									board.appendFileWriter("BLUE PLAYER placed 'S' at Row "+ rowSelected + ", Col " + colSelected);
+									board.appendFileWriter("Red Player placed 'S' at Row "+ rowSelected + ", Col " + colSelected);
 									if (board.getMode() == 0) {
 										if (board.sgSOSCheck(rowSelected, colSelected)) {
-											gameStatusBar.setText("BLUE PLAYER wins.");
-											//dispose();
+											gameStatusBar.setText("Red Player wins.");
+											 
 											board.closeFileWriter();
 										}
 										else if (!(board.checkIfFull() && board.sgSOSCheck(rowSelected, colSelected))) {
-											gameStatusBar.setText("RED PLAYER turn.");
+											gameStatusBar.setText("Blue Player turn.");
 										}
 									
 										if (board.checkIfFull() && !board.sgSOSCheck(rowSelected, colSelected)) {
 											gameStatusBar.setText("Game Draw.");
-											//dispose();
+											 
 											board.closeFileWriter();
 										}
 									}
 
 									if (board.getMode() == 1) {
 										pl1Score.setText("Score: " + updateP1Score(board.ggSOSCheck(rowSelected, colSelected)));
-										gameStatusBar.setText("RED PLAYER turn.");
+										gameStatusBar.setText("Blue Player turn.");
 										if (board.checkIfFull()) {
 											if (p1Points > p2Points) {
-												gameStatusBar.setText("BLUE PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Red Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points < p2Points) {
-												gameStatusBar.setText("RED PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Blue Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points == p2Points) {
 												gameStatusBar.setText("Game draw.");
-												//dispose();
+												 
 												board.closeFileWriter();
 											}
 										}
@@ -286,42 +298,42 @@ public class GUI extends JFrame {
 								}
 								else if (o1Btn.isSelected()){
 									board.makeOMove(rowSelected, colSelected);
-									board.appendFileWriter("BLUE PLAYER placed 'O' at Row "+ rowSelected + ", Col " + colSelected);
+									board.appendFileWriter("Red Player placed 'O' at Row "+ rowSelected + ", Col " + colSelected);
 									if (board.getMode() == 0) {
 										if (board.sgSOSCheck(rowSelected, colSelected)) {
-											gameStatusBar.setText("BLUE PLAYER wins.");
-											//dispose();
+											gameStatusBar.setText("Red Player wins.");
+											 
 											board.closeFileWriter();
 										}
 										else if (!(board.checkIfFull() && board.sgSOSCheck(rowSelected, colSelected))) {
-											gameStatusBar.setText("RED PLAYER turn.");
+											gameStatusBar.setText("Blue Player turn.");
 										}
 									
 										if (board.checkIfFull() && !board.sgSOSCheck(rowSelected, colSelected)) {
 											gameStatusBar.setText("Game Draw.");
-											//dispose();
+											 
 											board.closeFileWriter();
 										}
 									}
 	
 									if (board.getMode() == 1) {
 										pl1Score.setText("Score: " + updateP1Score(board.ggSOSCheck(rowSelected, colSelected)));
-										gameStatusBar.setText("RED PLAYER turn.");
+										gameStatusBar.setText("Blue Player turn.");
 										
 										if (board.checkIfFull()) {
 											if (p1Points > p2Points) {
-												gameStatusBar.setText("BLUE PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Red Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points < p2Points) {
-												gameStatusBar.setText("RED PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Blue Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points == p2Points) {
 												gameStatusBar.setText("Game draw.");
-												//dispose();
+												 
 												board.closeFileWriter();
 											}
 										}
@@ -329,51 +341,146 @@ public class GUI extends JFrame {
 									board.moveCountInc();
 									repaint();
 								}
+							}
 							
-							
-
+							//START: IF A COMPUTER IS SELECTED FOR Red Player
+							if (comOne.isSelected()) {
+								randomMoveChance = random.nextInt(CHANCE);
+								if(randomMoveChance % 2 == 0) {
+									int[] rndmCoords = board.makeAutoSMove();
+									board.appendFileWriter("Blue Computer placed 'S' at Row "+ rndmCoords[0] + ", Col " + rndmCoords[1]);
+									if (board.getMode() == 0) {
+										if (board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Blue Computer wins.");
+											 
+											board.closeFileWriter();
+										}
+										else if (!(board.checkIfFull() && board.sgSOSCheck(rndmCoords[0], rndmCoords[1]))) {
+											gameStatusBar.setText("Blue Player turn.");
+										}
+									
+										if (board.checkIfFull() && !board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Game Draw.");
+											 
+											board.closeFileWriter();
+										}
+									}
+									
+									if (board.getMode() == 1) {
+										pl1Score.setText("Score: " + updateP1Score(board.ggSOSCheck(rndmCoords[0], rndmCoords[1])));
+										gameStatusBar.setText("Blue Player turn.");
+										
+										if (board.checkIfFull()) {
+											if (p1Points > p2Points) {
+												gameStatusBar.setText("Blue Computer wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points < p2Points) {
+												gameStatusBar.setText("Blue Player wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points == p2Points) {
+												gameStatusBar.setText("Game draw.");
+												 
+												board.closeFileWriter();
+											}
+										}
+									}
+									board.moveCountInc();
+									repaint();
+								}
+								
+								else {
+									int[] rndmCoords = board.makeAutoOMove();
+									board.appendFileWriter("Blue Computer placed 'O' at Row "+ rndmCoords[0] + ", Col " + rndmCoords[1]);
+									if (board.getMode() == 0) {
+										if (board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Blue Computer wins.");
+											 
+											board.closeFileWriter();
+										}
+										else if (!(board.checkIfFull() && board.sgSOSCheck(rndmCoords[0], rndmCoords[1]))) {
+											gameStatusBar.setText("Blue Player turn.");
+										}
+									
+										if (board.checkIfFull() && !board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Game Draw.");
+											 
+											board.closeFileWriter();
+										}
+									}
+									
+									if (board.getMode() == 1) {
+										pl1Score.setText("Score: " + updateP1Score(board.ggSOSCheck(rndmCoords[0], rndmCoords[1])));
+										gameStatusBar.setText("Blue Player turn.");
+										
+										if (board.checkIfFull()) {
+											if (p1Points > p2Points) {
+												gameStatusBar.setText("Blue Computer wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points < p2Points) {
+												gameStatusBar.setText("Blue Player wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points == p2Points) {
+												gameStatusBar.setText("Game draw.");
+												 
+												board.closeFileWriter();
+											}
+										}
+									}
+									board.moveCountInc();
+									repaint();
+								}	
+							}
 						}
 						
-						//END										
+						//END						
+						//START: IF A HUMAN IS SELECTED FOR Blue Player						
 						else {
-					
+							if (humTwo.isSelected()) {
 								if (s2Btn.isSelected()) {
 									board.makeSMove(rowSelected, colSelected);
-									board.appendFileWriter("RED PLAYER placed 'S' at Row "+ rowSelected + ", Col " + colSelected);
+									board.appendFileWriter("Blue Player placed 'S' at Row "+ rowSelected + ", Col " + colSelected);
 									if (board.getMode() == 0) {
 										if (board.sgSOSCheck(rowSelected, colSelected)) {
-											gameStatusBar.setText("RED PLAYER wins.");
-											//dispose();
+											gameStatusBar.setText("Blue Player wins.");
+											 
 											board.closeFileWriter();
 										}
 										else if (!(board.checkIfFull() && board.sgSOSCheck(rowSelected, colSelected))) {
-											gameStatusBar.setText("BLUE PLAYER turn.");
+											gameStatusBar.setText("Red Player turn.");
 										}
 									
 										if (board.checkIfFull() && !board.sgSOSCheck(rowSelected, colSelected)) {
 											gameStatusBar.setText("Game Draw.");
-											//dispose();
+											 
 											board.closeFileWriter();
 										}
 									}
 				
 									if (board.getMode() == 1) {
 										pl2Score.setText("Score: " + updateP2Score(board.ggSOSCheck(rowSelected, colSelected)));
-										gameStatusBar.setText("BLUE PLAYER turn.");
+										gameStatusBar.setText("Red Player turn.");
 										if (board.checkIfFull()) {
 											if (p1Points > p2Points) {
-												gameStatusBar.setText("BLUE PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Red Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points < p2Points) {
-												gameStatusBar.setText("RED PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Blue Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points == p2Points) {
 												gameStatusBar.setText("Game draw.");
-												//dispose();
+												 
 												board.closeFileWriter();
 											}
 										}
@@ -384,42 +491,41 @@ public class GUI extends JFrame {
 								}
 								else if (o2Btn.isSelected()){
 									board.makeOMove(rowSelected, colSelected);
-									board.appendFileWriter("RED PLAYER placed 'O' at Row "+ rowSelected + ", Col " + colSelected);
+									board.appendFileWriter("Blue Player placed 'O' at Row "+ rowSelected + ", Col " + colSelected);
 									if (board.getMode() == 0) {
 										if (board.sgSOSCheck(rowSelected, colSelected)) {
-											gameStatusBar.setText("RED PLAYER wins.");
-											//dispose();
+											gameStatusBar.setText("Blue Player wins.");
+											 
 											board.closeFileWriter();
 										}
 										else if (!(board.checkIfFull() && board.sgSOSCheck(rowSelected, colSelected))) {
-											gameStatusBar.setText("BLUE PLAYER turn.");
-											//dispose();
+											gameStatusBar.setText("Red Player turn.");
 										}
 									
 										if (board.checkIfFull() && !board.sgSOSCheck(rowSelected, colSelected)) {
 											gameStatusBar.setText("Game Draw.");
-											//dispose();
+											 
 											board.closeFileWriter();
 										}
 									}
 			
 									if (board.getMode() == 1) {
 										pl2Score.setText("Score: " + updateP2Score(board.ggSOSCheck(rowSelected, colSelected)));
-										gameStatusBar.setText("BLUE PLAYER turn.");
+										gameStatusBar.setText("Red Player turn.");
 										if (board.checkIfFull()) {
 											if (p1Points > p2Points) {
-												gameStatusBar.setText("BLUE PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Red Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points < p2Points) {
-												gameStatusBar.setText("RED PLAYER wins.");
-												//dispose();
+												gameStatusBar.setText("Blue Player wins.");
+												 
 												board.closeFileWriter();
 											}
 											else if (p1Points == p2Points) {
 												gameStatusBar.setText("Game draw.");
-												//dispose();
+												 
 												board.closeFileWriter();
 											}
 										}
@@ -427,9 +533,106 @@ public class GUI extends JFrame {
 									board.moveCountInc();
 									repaint();
 								}
+							}
 							
-							
-
+							if (comTwo.isSelected()) {
+								randomMoveChance = random.nextInt(CHANCE);
+								if(randomMoveChance % 2 == 0) {
+									int[]rndmCoords = board.makeAutoSMove();
+									board.appendFileWriter("Red Computer placed 'S' at Row "+ rndmCoords[0] + ", Col " + rndmCoords[1]);
+									//This if block decides the status of a SIMPLE GAME by checking for SOS's and if the board is full 
+									if (board.getMode() == 0) {
+										if (board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Red Computer wins.");
+											// 
+											board.closeFileWriter();
+										}
+										else if (!(board.checkIfFull() && board.sgSOSCheck(rndmCoords[0], rndmCoords[1]))) {
+											gameStatusBar.setText("Red Player turn.");
+										}
+								
+										if (board.checkIfFull() && !board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Game Draw.");
+											// 
+											board.closeFileWriter();
+										}
+									}
+									//END
+									//START: This if block decides the status of a GENERAL GAME by checking for SOS's, if the board is full, and who has how many points
+									if (board.getMode() == 1) {
+										pl2Score.setText("Score: " + updateP2Score(board.ggSOSCheck(rndmCoords[0], rndmCoords[1])));
+										gameStatusBar.setText("Red Player turn.");
+										if (board.checkIfFull()) {
+											if (p1Points > p2Points) {
+												gameStatusBar.setText("Red Player wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points < p2Points) {
+												gameStatusBar.setText("Red Computer wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points == p2Points) {
+												gameStatusBar.setText("Game draw.");
+												 
+												board.closeFileWriter();
+											}
+										}
+									}
+									//END
+									board.moveCountInc(); //Must increment the move counter so that it goes to the next players turn
+									repaint();
+								}
+								
+								else {
+									int[]rndmCoords = board.makeAutoOMove();
+									board.appendFileWriter("Red Computer placed 'O' at Row "+ rndmCoords[0] + ", Col " + rndmCoords[1]);
+									//This if block decides the status of a SIMPLE GAME by checking for SOS's and if the board is full 
+									if (board.getMode() == 0) {
+										if (board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Red Computer wins.");
+											 
+											board.closeFileWriter();
+										}
+										else if (!(board.checkIfFull() && board.sgSOSCheck(rndmCoords[0], rndmCoords[1]))) {
+											gameStatusBar.setText("Red Player turn.");
+										}
+								
+										if (board.checkIfFull() && !board.sgSOSCheck(rndmCoords[0], rndmCoords[1])) {
+											gameStatusBar.setText("Game Draw.");
+											 
+											board.closeFileWriter();
+										}
+									}
+									//END
+									//START: This if block decides the status of a GENERAL GAME by checking for SOS's, if the board is full, and who has how many points
+									if (board.getMode() == 1) {
+										pl2Score.setText("Score: " + updateP2Score(board.ggSOSCheck(rndmCoords[0], rndmCoords[1])));
+										gameStatusBar.setText("Red Player turn.");
+										if (board.checkIfFull()) {
+											if (p1Points > p2Points) {
+												gameStatusBar.setText("Red Player wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points < p2Points) {
+												gameStatusBar.setText("Red Computer wins.");
+												 
+												board.closeFileWriter();
+											}
+											else if (p1Points == p2Points) {
+												gameStatusBar.setText("Game draw.");
+												 
+												board.closeFileWriter();
+											}
+										}
+									}
+									//END
+									board.moveCountInc(); //Must increment the move counter so that it goes to the next players turn
+									repaint();
+								}
+							}
 						}
 				}});
 		}
@@ -474,7 +677,9 @@ public class GUI extends JFrame {
 					}
 				}
 			}
+			
 		}
+		
 	}
 
 	public static void main(String[] args) {
