@@ -282,4 +282,49 @@ public class JunitTests {
 		board.makeOMove(1, 6);
 		assertEquals(true, board.checkLeftDiag(1, 6));
 	}
+	//TESTING TO SEE IF AN S IS PLACED ON THE BOARD WHEN USING THE AUTO 'S' MOVE
+		@Test
+		public void autoSMoveTest() {
+			Board board = new Board();
+			board.setBoardSize(5);
+			board.makeAutoSMove();
+			
+			boolean temp = false;
+			for (int row = 0; row < board.getRows(); row++) {
+				for(int col = 0; col < board.getCols(); col++) {
+					if (board.getCell(row, col) == Cell.S) {
+						temp = true;
+						break;
+					}
+					else {
+						continue;
+					}
+				}
+			}
+			
+			assertEquals(true, temp);
+		}
+		
+	//TESTING TO SEE IF AN O IS PLACED ON THE BOARD WHEN USING THE AUTO 'O' MOVE	
+		@Test 
+		public void autoOMoveTest() {
+			Board board = new Board();
+			board.setBoardSize(7);
+			board.makeAutoOMove();
+			
+			boolean temp = false;
+			for (int row = 0; row < board.getRows(); row++) {
+				for(int col = 0; col < board.getCols(); col++) {
+					if (board.getCell(row, col) == Cell.O) {
+						temp = true;
+						break;
+					}
+					else {
+						continue;
+					}
+				}
+			}
+			
+			assertEquals(true, temp);
+		}
 }
