@@ -30,6 +30,8 @@ public class GUI extends JFrame {
 	private Board board;
 	private JRadioButton r1;
 	private JRadioButton r2;
+	private JRadioButton r3;
+	private JRadioButton r4;
 	private JRadioButton s1Btn;
 	private JRadioButton o1Btn;
 	private JRadioButton humOne;
@@ -168,22 +170,31 @@ public class GUI extends JFrame {
 		
 //		CONTENT FOR GAME MODE
 		r1=new JRadioButton("Simple Game");    
-		r2=new JRadioButton("General Game");    
+		r2=new JRadioButton("General Game");
+		r3=new JRadioButton("Record Game");
+		r4=new JRadioButton("Replay Game");
 		r1.setBounds(75,50,100,30);    
-		r2.setBounds(75,200,100,30);    
+		r2.setBounds(75,200,100,30);
+		r3.setBounds(75,1000,100,30);
+		r4.setBounds(75,10000,100,30);
 		ButtonGroup bg=new ButtonGroup();
 		bg.add(r1);
 		bg.add(r2);
+		bg.add(r3);
+		bg.add(r4);
 		JPanel panGameMode = new JPanel();
 		BoxLayout panGameModeLayout = new BoxLayout(panGameMode, BoxLayout.Y_AXIS);
 		panGameMode.setLayout(panGameModeLayout);
 		panGameMode.add(r1);
 		panGameMode.add(r2);
+		panGameMode.add(r3);
+		panGameMode.add(r4);
 		r2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				board.setMode(1);
 				r1.setVisible(false);
+				r3.setVisible(false);
 				pl1Score.setVisible(true);
 				pl2Score.setVisible(true);
 				sizeSelect.setEditable(true);
@@ -197,6 +208,7 @@ public class GUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				board.setMode(0);
 				r2.setVisible(false);
+				r3.setVisible(false);
 				sizeSelect.setEditable(true);
 				board.resetMoveCount();
 				System.out.println(board.getMode());
@@ -233,13 +245,15 @@ public class GUI extends JFrame {
 		contentPane.add(panRight, BorderLayout.PAGE_START);
 		contentPane.add(panGameMode, BorderLayout.LINE_END);
 		contentPane.add(playerPanel, BorderLayout.WEST);
-		
 	}
 
 	class GameBoardCanvas extends JPanel {
 		GameBoardCanvas(){
 			addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {  
+					if (r4.isSelected()){
+						board.clearBoard();
+					}
 						int rowSelected = e.getY() / CELL_SIZE;
 						int colSelected = e.getX() / CELL_SIZE;
 						System.out.println("Clicked coordinates:");
@@ -252,6 +266,9 @@ public class GUI extends JFrame {
 						 */
 						if (board.getMoveCount() % 2 == 0) {
 							if (humOne.isSelected()) {
+								if (r4.isSelected()){
+									board.clearBoard();
+								}
 								if (s1Btn.isSelected()) {
 									board.makeSMove(rowSelected, colSelected);
 									board.appendFileWriter("Red Player placed 'S' at Row "+ rowSelected + ", Col " + colSelected);
@@ -364,6 +381,9 @@ public class GUI extends JFrame {
 											 
 											board.closeFileWriter();
 										}
+										if (r4.isSelected()){
+											board.clearBoard();
+										}
 									}
 									
 									if (board.getMode() == 1) {
@@ -387,6 +407,9 @@ public class GUI extends JFrame {
 												board.closeFileWriter();
 											}
 										}
+									}
+									if (r4.isSelected()){
+										board.clearBoard();
 									}
 									board.moveCountInc();
 									repaint();
@@ -410,6 +433,9 @@ public class GUI extends JFrame {
 											 
 											board.closeFileWriter();
 										}
+										if (r4.isSelected()){
+											board.clearBoard();
+										}
 									}
 									
 									if (board.getMode() == 1) {
@@ -433,6 +459,9 @@ public class GUI extends JFrame {
 												board.closeFileWriter();
 											}
 										}
+									}
+									if (r4.isSelected()){
+										board.clearBoard();
 									}
 									board.moveCountInc();
 									repaint();
@@ -462,6 +491,9 @@ public class GUI extends JFrame {
 											 
 											board.closeFileWriter();
 										}
+										if (r4.isSelected()){
+											board.clearBoard();
+										}
 									}
 				
 									if (board.getMode() == 1) {
@@ -486,6 +518,9 @@ public class GUI extends JFrame {
 										}
 									
 									}
+									if (r4.isSelected()){
+										board.clearBoard();
+									}
 									board.moveCountInc();
 									repaint();
 								}
@@ -506,6 +541,9 @@ public class GUI extends JFrame {
 											gameStatusBar.setText("Game Draw.");
 											 
 											board.closeFileWriter();
+										}
+										if (r4.isSelected()){
+											board.clearBoard();
 										}
 									}
 			
@@ -529,6 +567,9 @@ public class GUI extends JFrame {
 												board.closeFileWriter();
 											}
 										}
+									}
+									if (r4.isSelected()){
+										board.clearBoard();
 									}
 									board.moveCountInc();
 									repaint();
@@ -556,6 +597,9 @@ public class GUI extends JFrame {
 											// 
 											board.closeFileWriter();
 										}
+										if (r4.isSelected()){
+											board.clearBoard();
+										}
 									}
 									//END
 									//START: This if block decides the status of a GENERAL GAME by checking for SOS's, if the board is full, and who has how many points
@@ -579,6 +623,9 @@ public class GUI extends JFrame {
 												board.closeFileWriter();
 											}
 										}
+									}
+									if (r4.isSelected()){
+										board.clearBoard();
 									}
 									//END
 									board.moveCountInc(); //Must increment the move counter so that it goes to the next players turn
@@ -605,6 +652,9 @@ public class GUI extends JFrame {
 											board.closeFileWriter();
 										}
 									}
+									if (r4.isSelected()){
+										board.clearBoard();
+									}
 									//END
 									//START: This if block decides the status of a GENERAL GAME by checking for SOS's, if the board is full, and who has how many points
 									if (board.getMode() == 1) {
@@ -627,6 +677,9 @@ public class GUI extends JFrame {
 												board.closeFileWriter();
 											}
 										}
+									}
+									if (r4.isSelected()){
+										board.clearBoard();
 									}
 									//END
 									board.moveCountInc(); //Must increment the move counter so that it goes to the next players turn
