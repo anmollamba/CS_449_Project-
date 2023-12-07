@@ -1,17 +1,9 @@
 package application;
 
 import java.io.FileWriter;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Board {
 	public enum Cell {EMPTY, S, O};
@@ -388,4 +380,5 @@ public class Board {
 			System.out.println(e);
 		}
 	}
+
 }
